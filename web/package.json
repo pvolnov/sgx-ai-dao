@@ -47,7 +47,6 @@
     "patch-package": "^8.0.0",
     "typescript": "^5.2.2",
     "vite": "^5.3.4",
-    "vite-imagetools": "^7.0.4",
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-node-polyfills": "^0.22.0",
     "vite-plugin-svgr": "^4.2.0",
