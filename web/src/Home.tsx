@@ -8,9 +8,10 @@ import { base } from "viem/chains";
 import { http } from "wagmi";
 
 import { colors } from "@uikit/theme";
-import { H2, SmallText, Text } from "@uikit/typographic";
-import { DAO_ABI, REGISTORY_ABI, REGISTORY_ADDRESS } from "./contract";
+import { BoldP, H2, Text, TinyText } from "@uikit/typographic";
+import { DAO_ABI, ERC20_ABI, REGISTORY_ABI, REGISTORY_ADDRESS } from "./contract";
 import { ManifestDAO } from "./Create";
+import { formatUnits } from "ethers";
 
 export const publicClient = createPublicClient({
   transport: http(),
@@ -19,7 +20,16 @@ export const publicClient = createPublicClient({
 
 const HomeScreen = () => {
   const navigate = useNavigate();
-  const [list, setList] = useState<{ manifest: ManifestDAO; dao: string }[]>([]);
+  const [list, setList] = useState<
+    {
+      manifest: ManifestDAO;
+      dao: string;
+      balance: bigint;
+      token: string;
+      symbol: string;
+      decimal: number;
+    }[]
+  >([]);
 
   useEffect(() => {
     const loadDAOs = async () => {
@@ -31,37 +41,84 @@ const HomeScreen = () => {
 
       setList([]);
       (daos as any[]).map(async (dao) => {
-        const hash = await readContract(publicClient, { abi: DAO_ABI, functionName: "manifest", address: dao });
+        const [hash, token] = await Promise.all([
+          readContract(publicClient, { abi: DAO_ABI, functionName: "manifest", address: dao }),
+          readContract(publicClient, { abi: DAO_ABI, functionName: "tokenAddress", address: dao }),
+        ]);
+
+        const [balance, symbol, decimal] = await Promise.all([
+          readContract(publicClient, { abi: ERC20_ABI, functionName: "balanceOf", address: token as any, args: [dao] }),
+          readContract(publicClient, { abi: ERC20_ABI, functionName: "symbol", address: token as any }),
+          readContract(publicClient, { abi: ERC20_ABI, functionName: "decimals", address: token as any }),
+        ]);
+
         const manifest = await fetch(`https://ipfs.hotdao.ai/ipfs/${hash}`).then((r) => r.json());
-        setList((t) => [...t, { dao, manifest }]);
+        setList((t) => [...t, { dao, manifest, balance, token, symbol, decimal } as any]);
       });
     };
 
     loadDAOs();
   }, []);
 
-  console.log({ list });
-
   return (
     <Root>
       <H2>AI DAOs</H2>
-      {list.map((item) => (
-        <Card onClick={() => navigate("/dao/" + item.dao)}>
-          <Text>{item.manifest.name}</Text>
-          <SmallText>{item.manifest.manifests[0]?.prompt}</SmallText>
-        </Card>
-      ))}
+      <Grid>
+        {list
+          .sort((a, b) => b.manifest.created_ts - a.manifest.created_ts)
+          .map((item) => (
+            <Card onClick={() => navigate("/dao/" + item.dao)}>
+              <BoldP>{item.manifest.name}</BoldP>
+
+              <div>
+                <TinyText>MANIFEST</TinyText>
+                <Text style={{ marginTop: 4 }}>{item.manifest.manifests[0]?.prompt}</Text>
+              </div>
+
+              <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+                <div>
+                  <TinyText>DISTRIBUTION</TinyText>
+                  <div style={{ marginTop: 6, display: "flex", alignItems: "center", gap: 6 }}>
+                    <img style={{ width: 20, height: 20, borderRadius: "50%" }} src={`https://storage.herewallet.app/ft/${item.token.toLowerCase()}.png`} />
+                    <Text>
+                      {formatUnits(item.balance, item.decimal)} {item.symbol}
+                    </Text>
+                  </div>
+                </div>
+
+                <div>
+                  <TinyText>CREATED AT</TinyText>
+                  <Text style={{ marginTop: 4 }}>{new Date(item.manifest.created_ts * 1000).toDateString()}</Text>
+                </div>
+              </div>
+            </Card>
+          ))}
+      </Grid>
     </Root>
   );
 };
 
 const Root = styled.div`
-  max-width: 920px;
-  margin: 64px auto;
+  max-width: 1200px;
+  margin: 24px auto;
   display: flex;
   flex-direction: column;
   padding: 24px;
   gap: 24px;
+`;
+
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+
+  @media (max-width: 980px) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const Card = styled.div`
@@ -70,9 +127,16 @@ const Card = styled.div`
   border: 1px solid ${colors.border};
   padding: 16px;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   p {
     word-wrap: break-word;
     white-space: pre-wrap;
+  }
+
+  &:hover {
+    border: 1px solid ${colors.blackPrimary};
   }
 `;
 

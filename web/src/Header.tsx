@@ -40,7 +40,7 @@ const HeaderComponent = () => {
 
   return (
     <Header>
-      <NavBar style={{ margin: "auto" }}>
+      <NavBar>
         <NavButton $active={location.pathname === "/"} onClick={() => navigate("/")}>
           <Text>Home</Text>
         </NavButton>
@@ -50,8 +50,8 @@ const HeaderComponent = () => {
         </NavButton>
       </NavBar>
 
-      <div style={{ position: "absolute", right: 24, display: "flex", gap: 16 }}>
-        <Button style={{ gap: 12, height: 42, background: colors.elevation1, padding: "12px 16px", borderRadius: 24, color: colors.blackPrimary }} onClick={() => connectWallet()}>
+      <SideButtons>
+        <Button style={{ gap: 12, height: 42, background: colors.elevation1, padding: "12px 12px", borderRadius: 24, color: colors.blackPrimary }} onClick={() => connectWallet()}>
           {client ? (
             <Text>
               {client.account.address.slice(0, 6)}..{client.account.address.slice(-6)}
@@ -62,10 +62,10 @@ const HeaderComponent = () => {
           <Icon name="wallet" />
         </Button>
 
-        <Button onClick={() => toggleTheme()} style={{ gap: 12, height: 42, background: colors.elevation1, padding: "12px 16px", borderRadius: 24, color: colors.blackPrimary }}>
+        <Button onClick={() => toggleTheme()} style={{ gap: 12, height: 42, background: colors.elevation1, padding: "12px 12px", borderRadius: 24, color: colors.blackPrimary }}>
           <Icon name={theme === "dark" ? "sun" : "lighter"} />
         </Button>
-      </div>
+      </SideButtons>
     </Header>
   );
 };
@@ -75,12 +75,37 @@ export const Header = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  height: 62px;
+  padding: 0 24px;
+
+  @media (max-width: 980px) {
+    justify-content: flex-start;
+  }
+
+  @media (max-width: 540px) {
+    padding: 0 16px;
+  }
+`;
+
+export const SideButtons = styled.div`
+  position: absolute;
+  right: 24px;
+  display: flex;
+  gap: 16px;
+
+  @media (max-width: 540px) {
+    right: 16px;
+  }
 `;
 
 export const NavBar = styled.div`
   display: flex;
   gap: 32px;
+
+  @media (max-width: 540px) {
+    display: none;
+  }
 `;
 
 export const NavButton = styled.button<{ $active?: boolean }>`
@@ -90,7 +115,7 @@ export const NavButton = styled.button<{ $active?: boolean }>`
   font-weight: 600;
   line-height: 20px;
   border: none;
-  height: 68px;
+  height: 62px;
 
   background-color: ${colors.elevation0};
   color: ${(p) => (p.$active ? colors.blackPrimary : colors.blackSecondary)};
