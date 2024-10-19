@@ -66,7 +66,7 @@ const DAO = () => {
       const tweetId = parts.reverse().find((t) => !isNaN(+t));
       if (tweetId == null) throw "Invalid tweet link";
 
-      await conversation?.send(JSON.stringify({ dao_address: id, tweet_id: +tweetId, id: uuid }));
+      await conversation?.send(JSON.stringify({ dao_address: id, tweet_id: tweetId, id: uuid }));
       const msg = await waitMessage();
       setLoading(false);
       setResult(msg);

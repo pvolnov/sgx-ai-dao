@@ -142,9 +142,11 @@ const CreateDao = () => {
 
       const address = await getMachineAddress(hash);
       const erc20 = new ethers.Contract(tokenAddress, ERC20_ABI, etherClient);
-      const [balance, decimal] = await Promise.all([erc20.balanceOf(), erc20.decimals()]);
 
-      let int = BigInt(formatUnits(balance, decimal));
+      let [balance, decimal] = await Promise.all([erc20.balanceOf(etherClient.address), erc20.decimals()]);
+      balance = BigInt(balance);
+
+      let int = parseUnits(amount, decimal);
       if (int > balance) int = balance;
 
       const result = await client?.deployContract({
