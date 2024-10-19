@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover" />
+    <meta name="description" content="XAIDAO" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900" rel="stylesheet" />
+    <link href="https://fonts.cdnfonts.com/css/cabinet-grotesk" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Nerko+One&display=swap" rel="stylesheet" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#dba970" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="msapplication-TileColor" content="#da532c" />
+    <meta name="theme-color" content="#f3ebea" />
+
+    <title>XAIDAO</title>
+
+    <style>
+      :root {
+        overscroll-behavior: none;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        height: var(--dvh);
+        width: 100vw;
+      }
+
+      html {
+        background: var(--Container-low);
+        height: var(--dvh);
+        width: 100vw;
+      }
+
+      input:focus {
+        outline: none;
+      }
+
+      #root {
+        width: 100vw;
+        height: var(--dvh);
+        -webkit-overflow-scrolling: touch;
+        background: var(--Container-low);
+        overflow-y: auto;
+        transition: 0.2s height;
+      }
+
+      .disable-animations * {
+        transition: none !important;
+        animation-name: none !important;
+      }
+
+      body.ios {
+        overflow: hidden;
+      }
+
+      body.ios #root {
+        position: fixed;
+        overflow-y: auto;
+      }
+
+      * {
+        box-sizing: border-box;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        -webkit-tap-highlight-color: transparent;
+        accent-color: var(--Black-Primary);
+      }
+
+      :root {
+        --Stroke: #c7bab8;
+
+        --Border-High: #2c3034;
+        --Border-Low: #c7bab8;
+        --Border-Lowest: #d9cdcb;
+
+        --Elevation-0: #f3ebea;
+        --Elevation-1: #ebdedc;
+        --Elevation-2: #d9cdcb;
+        --White-Primary: #fff;
+        --Tertiary: #b4afae;
+        --Tertiary-1: #fce823;
+        --Tertiary-2: #fd84e3;
+        --Tertiary-3: #fdbf1e;
+
+        --Controls-Dark-Dark: #2c3034;
+
+        --Active-Tabs: #fce823;
+
+        --Hot-Progress-low: #fbc56a;
+        --Hot-Progress-high: #fe910f;
+
+        --Container-low: #ebdedc;
+        --Surface-common-default: #f3ebea;
+        --Surface-common-container-low: #ebdedc;
+
+        --Black-Primary: #2c3034;
+        --Black-Secondary: #6b6661;
+
+        --Red-Primary: #d63e3e;
+        --Red-Alpha: rgba(214, 62, 62, 0.15);
+
+        --Green-Secondary: #234d46;
+        --Green-Classic: #087164;
+        --Green-Alpha: #acc4bf;
+        --Green-Text: #087164;
+        --Green-Transparent: rgba(8, 113, 100, 0.1);
+
+        --Orange-Primary: #fdbf1e;
+        --Orange-30: #fdbf1e;
+        --Orange-Warning: #db8520;
+        --Orange-Warning-Warning: #db8520;
+        --Orange-Warning-Alpha: rgba(219, 133, 32, 0.15);
+
+        --Yellow-Primary: #fce823;
+        --Yellow-40: #fce823;
+
+        --Pink-Primary: #fd84e3;
+
+        --Blue-Primary: #0258f7;
+        --Blue-Secondary: #95a7e8;
+
+        --Disabled-Button: #b4afaeff;
+        --Always-Dark-Border: #2c3034;
+
+        --Dark-Dark: #2c3034;
+
+        --Controls-Secondary: #f3ebea;
+
+        --Score: #fd84e3;
+
+        --Icon-Secondary: #6b6661;
+
+        --Shadow-stroke: #2c3034;
+      }
+
+      [data-theme="dark"] {
+        --Stroke: #ffffff1a;
+
+        --Border-High: rgba(255, 255, 255, 0.25);
+        --Border-Low: rgba(255, 255, 255, 0.1);
+        --Border-Lowest: rgba(255, 255, 255, 0.07);
+
+        --Elevation-0: #1d1f20;
+        --Elevation-1: #262729;
+        --Elevation-2: #2b2d2e;
+        --White-Primary: #ffffff;
+        --Tertiary: #706c6c;
+        --Tertiary-1: #ffd977;
+        --Tertiary-2: #fd84e3;
+        --Tertiary-3: #ffedb2ff;
+
+        --Controls-Dark-Dark: #2c3034;
+
+        --Active-Tabs: #e9c363ff;
+
+        --Hot-Progress-low: #ffdfa9;
+        --Hot-Progress-high: #ffc47f;
+
+        --Container-low: #141518;
+        --Surface-common-default: #1d1f20;
+        --Surface-common-container-low: #262729;
+
+        --Black-Primary: #ebdedc;
+        --Black-Secondary: #ada5a4;
+
+        --Red-Primary: #ee5555;
+        --Red-Alpha: rgba(238, 85, 85, 0.15);
+
+        --Green-Secondary: #50817b;
+        --Green-Classic: #38ac9e;
+        --Green-Alpha: #1a3f3b;
+        --Green-Text: #77c7bd;
+        --Green-Transparent: rgba(8, 113, 100, 0.1);
+
+        --Orange-Primary: #e9c363;
+        --Orange-30: #fdbf1e;
+        --Orange-Warning: #e9c363;
+        --Orange-Warning-Warning: #db8520;
+        --Orange-Warning-Alpha: rgba(219, 133, 32, 0.15);
+
+        --Yellow-Primary: #fce823;
+        --Yellow-40: #fce823;
+
+        --Pink-Primary: #fd84e3;
+
+        --Blue-Primary: #6385ff;
+        --Blue-Secondary: #95a7e8;
+
+        --Disabled-Button: #6a6565;
+
+        --Dark-Dark: #2c3034;
+
+        --Controls-Secondary: #313436;
+
+        --Score: #fd84e3;
+
+        --Icon-Secondary: #ada5a4;
+
+        --Shadow-stroke: #3d3f46;
+      }
+
+      a {
+        font-style: normal;
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 22px;
+        text-decoration-line: underline;
+        color: #fd84e3;
+      }
+
+      *::-webkit-scrollbar {
+        display: none;
+      }
+
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      .grecaptcha-badge {
+        visibility: hidden !important;
+      }
+
+      #captcha {
+        position: fixed;
+        bottom: 0;
+        background: var(--Elevation-0);
+        left: 0;
+        right: 0;
+        border-radius: 24px 24px 0 0;
+        padding: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+        z-index: 10000000;
+        box-shadow: -1px -10px 20px 0px #0000001c;
+      }
+
+      #captcha div {
+        width: fit-content;
+      }
+    </style>
+  </head>
+
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <div style="display: none" id="captcha"></div>
+
+    <script type="module">
+      document.documentElement.setAttribute("data-theme", "dark");
+
+      if (Promise.allSettled == null) {
+        Promise.allSettled = (promises) => Promise.all(promises.map((p) => p.then((value) => ({ status: "fulfilled", value })).catch((reason) => ({ status: "rejected", reason }))));
+      }
+
+      globalThis.Browser = { T: () => {} };
+      if (typeof window !== "undefined") {
+        window.Browser = { T: () => {} };
+      }
+
+      if (process.env.NODE_ENV === "production") {
+        console.warn = () => {};
+        console.log = () => {};
+      }
+    </script>
+    <script type="module" src="./src/index.tsx"></script>
+  </body>
+</html>
