@@ -30,7 +30,7 @@ const HomeScreen = () => {
     if (!client) return setList([]);
     const loadDAOs = async () => {
       const daos = await readContract(client, {
-        address: REGISTORY_ADDRESS,
+        address: REGISTORY_ADDRESS(client.chain.id),
         functionName: "getDaos",
         abi: REGISTORY_ABI,
       });

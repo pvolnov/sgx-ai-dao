@@ -50,18 +50,6 @@ const HeaderComponent = () => {
         </NavBar>
 
         <SideButtons>
-          {/* <Button style={{ gap: 12, height: 42, background: colors.elevation1, padding: "12px 12px", borderRadius: 24, color: colors.blackPrimary }} onClick={() => connectWallet()}>
-          {client ? (
-            <Text>
-              {client.account.address.slice(0, 6)}..{client.account.address.slice(-6)}
-            </Text>
-          ) : (
-            <Text>Connect wallet</Text>
-          )}
-
-          <Icon name="wallet" />
-        </Button> */}
-
           <ConnectButton />
 
           <Button onClick={() => toggleTheme()} style={{ gap: 12, height: 42, background: colors.elevation1, padding: "12px 12px", borderRadius: 24, color: colors.blackPrimary }}>

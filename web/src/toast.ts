@@ -27,7 +27,7 @@ export const notify = (data: any) => {
       borderRadius: "12px",
       maxWidth: "100%",
       width: "fit-content",
-      margin: "0 16px",
+      margin: isMobile() ? "0 16px" : "16px",
       boxShadow: `0 3px 6px -1px ${colors.elevation2}, 0 10px 36px -4px ${colors.elevation2}`,
     },
   });

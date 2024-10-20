@@ -10,6 +10,8 @@ import DAO from "./DAO";
 import PopupsProvider from "@uikit/Popup";
 import { SmallText } from "@uikit/typographic";
 import intelSgx from "./assets/intel.png";
+import xmtpIcon from "./assets/xmtp.png";
+
 import { colors } from "@uikit/theme";
 
 function App() {
@@ -28,6 +30,7 @@ function App() {
           </Routes>
 
           <a
+            target="_blank"
             href="https://www.intel.com/content/www/us/en/developer/tools/software-guard-extensions/attestation-services.html"
             style={{
               textDecoration: "none",
@@ -45,6 +48,27 @@ function App() {
           >
             <SmallText style={{ textDecoration: "none", color: colors.blackPrimary }}>Secured by Intel SGX</SmallText>
             <img src={intelSgx} style={{ width: 24, height: 24 }} />
+          </a>
+
+          <a
+            target="_blank"
+            href="https://xmtp.org/"
+            style={{
+              textDecoration: "none",
+              background: colors.elevation0,
+              borderRadius: 12,
+              opacity: 0.8,
+              display: "flex",
+              alignItems: "center",
+              gap: 4,
+              position: "fixed",
+              bottom: 48,
+              right: 12,
+              padding: "4px 8px",
+            }}
+          >
+            <SmallText style={{ textDecoration: "none", color: colors.blackPrimary }}>Powered with</SmallText>
+            <img src={xmtpIcon} style={{ height: 16, opacity: 0.8 }} />
           </a>
         </>
       </BrowserRouter>

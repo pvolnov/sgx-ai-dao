@@ -22,6 +22,7 @@ import chatgtpIcon from "./assets/chatgpt.png";
 import { base } from "viem/chains";
 import { readContract } from "viem/actions";
 import { useWalletClient } from "wagmi";
+import copyTextToClipboard from "./helpers";
 
 const DAO = () => {
   const { chain, id } = useParams();
@@ -175,12 +176,27 @@ const DAO = () => {
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div>
-          <SmallText>DAO NAME</SmallText>
-          {manifest ? <H2>{manifest?.manifest.name}</H2> : <Skeleton />}
+          <SmallText>MAO NAME</SmallText>
+          {manifest ? (
+            <H2>
+              {manifest?.manifest.name}{" "}
+              <Icon
+                style={{ cursor: "pointer", height: 40, marginBottom: -8, marginLeft: 8 }}
+                color={colors.blackPrimary}
+                name="dao_share"
+                onClick={() => {
+                  copyTextToClipboard(window.location.href);
+                  notify("MAO link copied");
+                }}
+              />
+            </H2>
+          ) : (
+            <Skeleton />
+          )}
         </div>
 
         <div style={{ textAlign: "right" }}>
-          <SmallText>DISTRIBUTION</SmallText>
+          <SmallText>MAO BALANCE</SmallText>
           {manifest ? (
             <div style={{ height: 34, marginTop: 6, display: "flex", alignItems: "center", gap: 6, justifyContent: "flex-end", textAlign: "right" }}>
               <img style={{ width: 24, height: 24, borderRadius: "50%" }} src={`https://storage.herewallet.app/ft/${manifest.token.toLowerCase()}.png`} />
@@ -206,8 +222,8 @@ const DAO = () => {
         <HereInput value={tweet} onChange={(e) => setTweet(e.target.value)} label="Enter your tweet" />
       </Fieild>
 
-      <ActionButton isLoading={isLoading} style={{ gap: 12 }} onClick={() => callDAO()}>
-        CALL DAO <Icon color={colors.elevation0} name="rocket" />
+      <ActionButton isLoading={isLoading} style={{ gap: 4 }} onClick={() => callDAO()}>
+        CALL DAO <Icon color={colors.elevation0} name="dao_star" />
       </ActionButton>
 
       {daoResult != null && (
@@ -241,8 +257,9 @@ const DAO = () => {
           )}
 
           {daoResult.signature != null && (
-            <ActionButton isLoading={isClaiming} onClick={() => makeTx()}>
+            <ActionButton style={{ gap: 4 }} isLoading={isClaiming} onClick={() => makeTx()}>
               Claim
+              <Icon color={colors.elevation0} name="dao_box" />
             </ActionButton>
           )}
         </div>

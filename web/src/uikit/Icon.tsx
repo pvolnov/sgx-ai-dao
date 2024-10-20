@@ -127,7 +127,17 @@ import hot_icon from "@uikit/icons/hot-icon.png";
 
 import message from "@uikit/icons/message.svg";
 
+import daoBox from "@uikit/icons/box-sharp.svg?react";
+import daoUpload from "@uikit/icons/upload-sharp.svg?react";
+import daoShare from "@uikit/icons/share-sharp.svg?react";
+import daoSparkles from "@uikit/icons/nouns-sparkles-sharp.svg?react";
+
 export const icons = {
+  dao_box: daoBox,
+  dao_star: daoSparkles,
+  dao_upload: daoUpload,
+  dao_share: daoShare,
+
   "tab-home": tab_home,
   "tab-home-active": tab_home_active,
 

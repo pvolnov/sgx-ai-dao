@@ -192,7 +192,7 @@ const CreateDao = () => {
 
       const address = await getMachineAddress(hash);
       const result = await client.deployContract({
-        args: [tokenAddress, address, hash, 0n, REGISTORY_ADDRESS],
+        args: [tokenAddress, address, hash, 0n, REGISTORY_ADDRESS(client.chain.id)],
         bytecode: `0x${DAO_CODE}`,
         abi: DAO_ABI,
       });
@@ -237,7 +237,7 @@ const CreateDao = () => {
     <Root>
       <Fieild>
         <SmallText>MAO NAME</SmallText>
-        <HereInput value={name} onChange={(e) => setName(e.target.value)} label="MAO" style={{ width: 300 }} />
+        <HereInput value={name} onChange={(e) => setName(e.target.value)} label="MAO" placeholder="Only good vibe MAO" style={{ width: 300 }} />
       </Fieild>
 
       <GroupField>
@@ -413,10 +413,8 @@ const CreateDao = () => {
       <div style={{ marginTop: 24 }}>
         <ActionButton big isLoading={isLoading} onClick={() => deploy()}>
           Deploy MAO on {client?.chain.name}
-          <Icon style={{ marginLeft: 16 }} name="rocket" />
+          <Icon style={{ marginLeft: 16 }} name="dao_upload" />
         </ActionButton>
-
-        <SmallText style={{ marginTop: 8 }}>Verification with SGX</SmallText>
       </div>
     </Root>
   );
