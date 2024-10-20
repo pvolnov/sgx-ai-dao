@@ -30,7 +30,7 @@ const HereInput = ({ multiline, postfix = "", postfixStyle, label, hasError, bac
 
   return (
     <InputWrap
-      className={props.value || usePostfix ? "editted" : ""}
+      className={props.value || props.placeholder || usePostfix ? "editted" : ""}
       style={{ background: backgroundColor, paddingTop: multiline ? 25 : 12, paddingBottom: multiline ? 12 : 0, ...(style || {}) }}
       hasError={hasError ? hasError : false}
     >

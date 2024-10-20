@@ -10,7 +10,7 @@ import { useState } from "react";
 import uuid4 from "uuid4";
 
 import { ActionButton } from "@uikit/button";
-import { BoldP, SmallText } from "@uikit/typographic";
+import { BoldP, SmallText, Text } from "@uikit/typographic";
 import { colors } from "@uikit/theme";
 import { sheets } from "@uikit/Popup";
 
@@ -58,8 +58,15 @@ const EditGraph = ({ name, id, query, onSave }: { id: string; query: string; nam
         <HereInput label="NAME" value={name} disabled />
       </Fieild>
 
-      <Fieild style={{ marginTop: 16 }}>
-        <HereInput label="SUBGRAPH QUERY ID" value={queryId} onChange={(e) => setQueryId(e.target.value)} />
+      <Fieild style={{ marginTop: 16, display: "flex", gap: 16, flexDirection: "row" }}>
+        <div style={{ flex: 1 }}>
+          <HereInput label="SUBGRAPH QUERY ID" value={queryId} onChange={(e) => setQueryId(e.target.value)} />
+        </div>
+        {!!queryId && (
+          <ActionButton style={{ width: 150 }} onClick={() => window.open(`https://thegraph.com/explorer/subgraphs/${queryId}`)}>
+            TRY ON GRAPH
+          </ActionButton>
+        )}
       </Fieild>
 
       <div className="graphiql-container" style={{ height: 220, borderRadius: 16, border: `1px solid ${colors.border}`, marginTop: 16, overflow: "hidden" }}>
@@ -236,22 +243,28 @@ const CreateDao = () => {
       <GroupField>
         <Fieild style={{ width: "70%" }}>
           <SmallText>DISTRIBUTION TOKEN</SmallText>
-          <HereInput value={tokenAddress} onChange={(e) => setupToken(e.target.value)} label="Token address" />
+          <HereInput value={tokenAddress} onChange={(e) => setupToken(e.target.value)} label="Token address" placeholder="0x833589fcd6edb6e08f4c7c32d4f71b54bda02913" />
         </Fieild>
 
         <Fieild style={{ flex: 1 }}>
           <SmallText>
             {tokenBalance} {selectedToken?.symbol || "TOKEN"}
           </SmallText>
-          <HereInput value={amount} onChange={(e) => setAmount(e.target.value)} label="Amount of tokens" />
+          <HereInput value={amount} onChange={(e) => setAmount(e.target.value)} label="Amount of tokens" placeholder="0" />
         </Fieild>
       </GroupField>
 
       <Fieild>
         <SmallText>DAO MANIFEST</SmallText>
-
-        <InputWrap hasError={false} className={manifest ? "editted" : ""}>
+        <InputWrap hasError={false} className={"editted"}>
           <Label>YOUR CHATGPT PROMPT</Label>
+
+          {!manifest && (
+            <Text style={{ position: "absolute", top: 28, opacity: 0.4 }}>
+              Send 1 if {`{graph.eth.price}`} {`>`} 2800 and user tweeted fun mem about web3
+            </Text>
+          )}
+
           <PromptInput
             contentEditable="plaintext-only"
             onClick={(e) => {
@@ -296,7 +309,7 @@ const CreateDao = () => {
       <GroupField>
         <Fieild style={{ flex: 1 }}>
           <SmallText>VALIDATE TWEETS ONLY FROM (OPTIONAL)</SmallText>
-          <HereInput label="USERNAME" value={tweetsFrom} onChange={(e) => setTweetsFrom(e.target.value)} />
+          <HereInput placeholder="@elonmusk" label="USERNAME" value={tweetsFrom} onChange={(e) => setTweetsFrom(e.target.value)} />
         </Fieild>
 
         <Fieild>
