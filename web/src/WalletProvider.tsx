@@ -4,7 +4,7 @@ import "@rainbow-me/rainbowkit/styles.css";
 import { WagmiProvider } from "wagmi";
 import { darkTheme, getDefaultConfig, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
-import { aurora, base, polygon, rootstockTestnet } from "wagmi/chains";
+import { aurora, base, hederaTestnet, polygon, rootstockTestnet } from "wagmi/chains";
 
 // HOT.setupEthProvider?.(async (data: any, chain: any, address: any) => {
 //   const result = await createProvider(getChain(chain), address || "").send(data.method, data.params);
@@ -19,6 +19,7 @@ const config = getDefaultConfig({
     polygon,
     aurora,
     rootstockTestnet,
+    hederaTestnet,
     {
       id: 22040,
       name: "AirDAO Testnet",
