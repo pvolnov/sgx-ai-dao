@@ -62,7 +62,7 @@ const HomeScreen = () => {
 
   return (
     <Root>
-      <H2>AI DAOs</H2>
+      <H2>All MAOs</H2>
       <Grid>
         {list
           .sort((a, b) => b.manifest.created_ts - a.manifest.created_ts)

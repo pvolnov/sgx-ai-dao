@@ -46,7 +46,11 @@ const HeaderComponent = () => {
         </NavButton>
 
         <NavButton $active={location.pathname === "/create"} onClick={() => navigate("/create")}>
-          <Text>Create DAO</Text>
+          <Text>Create MAO</Text>
+        </NavButton>
+
+        <NavButton $active={location.pathname === "/about"} onClick={() => navigate("/about")}>
+          <Text>How it works</Text>
         </NavButton>
       </NavBar>
 
@@ -59,6 +63,7 @@ const HeaderComponent = () => {
           ) : (
             <Text>Connect wallet</Text>
           )}
+
           <Icon name="wallet" />
         </Button>
 

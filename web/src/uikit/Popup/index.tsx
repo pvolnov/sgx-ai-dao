@@ -1,7 +1,7 @@
 import { action, makeObservable, observable, runInAction } from "mobx";
 import { AnimatePresence } from "framer-motion";
 import { observer } from "mobx-react-lite";
-import * as Sheet from "react-modal-sheet";
+import { Sheet } from "react-modal-sheet";
 import { colors } from "../theme";
 
 import { ModalContent, ModalOverlay, ModalWrap } from "./styled";

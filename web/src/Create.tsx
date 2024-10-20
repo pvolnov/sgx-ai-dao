@@ -23,6 +23,11 @@ import { formatNumber, getCaretCharacterOffsetWithin, setCaretPosition } from ".
 import { useEthersSigner } from "./useEtherProvider";
 import { notify } from "./toast";
 
+import { Controlled as CodeMirror } from "react-codemirror2";
+import "codemirror/lib/codemirror.css";
+import "codemirror/theme/material-darker.css";
+import "codemirror-graphql/mode";
+
 export interface ManifestDAO {
   name: string;
   created_ts: number;
@@ -57,9 +62,19 @@ const EditGraph = ({ name, id, query, onSave }: { id: string; query: string; nam
         <HereInput label="SUBGRAPH QUERY ID" value={queryId} onChange={(e) => setQueryId(e.target.value)} />
       </Fieild>
 
-      <Fieild style={{ marginTop: 16 }}>
+      <div className="graphiql-container" style={{ height: 220, borderRadius: 16, border: `1px solid ${colors.border}`, marginTop: 16, overflow: "hidden" }}>
+        <CodeMirror
+          value={graphql}
+          editorDidMount={(e) => e.setSize(null, 220)}
+          options={{ mode: "graphql", theme: "material-darker", lineNumbers: true }}
+          onBeforeChange={(editor, data, value) => setGraphql(value)}
+          onChange={(editor, data, value) => {}}
+        />
+      </div>
+
+      {/* <Fieild style={{ marginTop: 16 }}>
         <HereInput label="GRAPHQL QUERY" style={{ fontSize: 14, height: 200 }} multiline value={graphql} onChange={(e) => setGraphql(e.target.value)} />
-      </Fieild>
+      </Fieild> */}
 
       <ActionButton style={{ marginTop: 24 }} onClick={() => onSave(queryId, graphql)} disabled={!graphql || !queryId}>
         SAVE
@@ -207,8 +222,8 @@ const CreateDao = () => {
   return (
     <Root>
       <Fieild>
-        <SmallText>DAO NAME</SmallText>
-        <HereInput value={name} onChange={(e) => setName(e.target.value)} label="DAO" style={{ width: 300 }} />
+        <SmallText>MAO NAME</SmallText>
+        <HereInput value={name} onChange={(e) => setName(e.target.value)} label="MAO" style={{ width: 300 }} />
       </Fieild>
 
       <GroupField>
@@ -255,7 +270,7 @@ const CreateDao = () => {
               const value = e.currentTarget.textContent || "";
               setManifest(value);
 
-              const match = value.split(/(\{.+\})/g);
+              const match = value.split(/(\{.+?\})/g);
               const position = getCaretCharacterOffsetWithin(e.currentTarget);
 
               e.currentTarget.innerHTML = match

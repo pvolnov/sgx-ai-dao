@@ -1,3 +1,4 @@
+import { colors } from "@uikit/theme";
 import { motion } from "framer-motion";
 import styled from "styled-components";
 
@@ -22,6 +23,7 @@ export const ModalOverlay = styled(motion.div)`
 
 export const ModalContent = styled(motion.div)`
   background-color: var(--Elevation-0);
+  border: 1px solid ${colors.border};
   border-radius: 16px;
   padding: 48px;
   position: relative;
