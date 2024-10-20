@@ -1,0 +1,10 @@
+configs.yaml
+node_modules
+.env
+.DS_Store
+.vscode
+.idea
+coverage
+dist
+build
+*.log
