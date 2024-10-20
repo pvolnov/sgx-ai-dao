@@ -184,23 +184,29 @@ const CreateDao = () => {
       }).then((r) => r.json());
 
       const address = await getMachineAddress(hash);
-      const erc20 = new ethers.Contract(tokenAddress, ERC20_ABI, etherClient);
-
-      let [balance, decimal] = await Promise.all([erc20.balanceOf(etherClient.address), erc20.decimals()]);
-      balance = BigInt(balance);
-
-      let int = parseUnits(amount, decimal);
-      if (int > balance) int = balance;
-
-      console.log([tokenAddress, address, hash, int, 0n, REGISTORY_ADDRESS]);
       const result = await client.deployContract({
-        args: [tokenAddress, address, hash, int, 0n, REGISTORY_ADDRESS],
+        args: [tokenAddress, address, hash, 0n, REGISTORY_ADDRESS],
         bytecode: `0x${DAO_CODE}`,
         abi: DAO_ABI,
       });
 
       const receipt = await waitForTransactionReceipt(client, { hash: result! });
-      navigate(`/dao/${client.chain.id}/${receipt.contractAddress}`);
+      const daoAddress = receipt.contractAddress;
+
+      try {
+        const erc20 = new ethers.Contract(tokenAddress, ERC20_ABI, etherClient);
+        let [balance, decimal] = await Promise.all([erc20.balanceOf(etherClient.address), erc20.decimals()]);
+        balance = BigInt(balance);
+        let int = parseUnits(amount, decimal);
+        if (int > balance) int = balance;
+
+        if (int > 0n) {
+          const tx = await erc20.transfer(daoAddress, int);
+          await tx.wait();
+        }
+      } catch {}
+
+      navigate(`/dao/${client.chain.id}/${daoAddress}`);
       console.log({ receipt });
     } catch (e) {
       console.error(e);

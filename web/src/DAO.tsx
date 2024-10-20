@@ -3,27 +3,41 @@ import { observer } from "mobx-react-lite";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Client, DecodedMessage } from "@xmtp/xmtp-js";
-import { ethers } from "ethers";
+import { ethers, formatUnits } from "ethers";
 import uuid4 from "uuid4";
 
+import ConfettiExplosion from "react-confetti-explosion";
+
 import HereInput from "@uikit/Input";
-import { H2, SmallText, Text } from "@uikit/typographic";
+import { BoldP, H2, SmallText, Text } from "@uikit/typographic";
 import { ActionButton } from "@uikit/button";
 import { colors } from "@uikit/theme";
 import { ManifestDAO } from "./Create";
 import Icon from "@uikit/Icon";
 
 import { notify } from "./toast";
-import { DAO_ABI, TEE } from "./contract";
+import { DAO_ABI, ERC20_ABI, TEE } from "./contract";
 import { useEthersSigner } from "./useEtherProvider";
 import chatgtpIcon from "./assets/chatgpt.png";
 import { base } from "viem/chains";
+import { readContract } from "viem/actions";
+import { useWalletClient } from "wagmi";
 
 const DAO = () => {
   const { chain, id } = useParams();
-  const [manifest, setManifest] = useState<ManifestDAO>();
+  const { data: client } = useWalletClient();
+  const [manifest, setManifest] = useState<{
+    manifest: ManifestDAO;
+    dao: string;
+    balance: bigint;
+    token: string;
+    symbol: string;
+    decimal: number;
+  }>();
+
   const etherClient = useEthersSigner(+(chain || 1));
 
+  const [isSuccess, setSuccess] = useState(false);
   const [isClaiming, setClaiming] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [tweet, setTweet] = useState("");
@@ -35,6 +49,7 @@ const DAO = () => {
     publicKey?: string;
     response: string;
     request: string;
+    error: string;
     signature: string;
   }>();
 
@@ -57,6 +72,7 @@ const DAO = () => {
         };
 
         for await (const message of await conversation.streamMessages()) {
+          console.log({ message });
           if (!isSender(message)) continue;
           const msg = parseMessage(message);
           if (msg.id === uuid) return msg;
@@ -87,6 +103,7 @@ const DAO = () => {
       const tx = await contract.send(address, amount, requestHash, signature);
       const receipt = await tx.wait();
       console.log({ receipt });
+      setSuccess(true);
     } catch (e) {
       notify(e);
     } finally {
@@ -96,11 +113,21 @@ const DAO = () => {
 
   useEffect(() => {
     const load = async () => {
-      if (!etherClient || !id) return;
-      const contract = new ethers.Contract(id!, DAO_ABI, etherClient!);
-      const hash = await contract.manifest();
+      if (!etherClient || !client || !id) return;
+
+      const [hash, token] = await Promise.all([
+        readContract(client, { abi: DAO_ABI, functionName: "manifest", address: id as any }),
+        readContract(client, { abi: DAO_ABI, functionName: "tokenAddress", address: id as any }),
+      ]);
+
+      const [balance, symbol, decimal] = await Promise.all([
+        readContract(client, { abi: ERC20_ABI, functionName: "balanceOf", address: token as any, args: [id] }),
+        readContract(client, { abi: ERC20_ABI, functionName: "symbol", address: token as any }),
+        readContract(client, { abi: ERC20_ABI, functionName: "decimals", address: token as any }),
+      ]);
+
       const manifest = await fetch(`https://ipfs.hotdao.ai/ipfs/${hash}`).then((r) => r.json());
-      setManifest(manifest);
+      setManifest({ dao: id, manifest, balance, token, symbol, decimal } as any);
     };
 
     load();
@@ -108,15 +135,69 @@ const DAO = () => {
 
   return (
     <Root>
-      <div>
-        <SmallText>DAO NAME</SmallText>
-        {manifest ? <H2>{manifest?.name}</H2> : <Skeleton />}
+      {isSuccess && (
+        <>
+          <div style={{ position: "fixed", width: 5, height: 5, left: "0", top: "0", pointerEvents: "none" }}>
+            <ConfettiExplosion
+              onComplete={() => {
+                setSuccess(false);
+                setResult(undefined);
+                setLoading(false);
+                setClaiming(false);
+              }}
+              {...{
+                force: 0.8,
+                duration: 3000,
+                particleCount: 250,
+                width: window.innerWidth,
+              }}
+            />
+          </div>
+
+          <div style={{ position: "fixed", width: 5, height: 5, right: "0", top: "0", pointerEvents: "none" }}>
+            <ConfettiExplosion
+              onComplete={() => {
+                setSuccess(false);
+                setResult(undefined);
+                setLoading(false);
+                setClaiming(false);
+              }}
+              {...{
+                force: 0.8,
+                duration: 3000,
+                particleCount: 250,
+                width: window.innerWidth,
+              }}
+            />
+          </div>
+        </>
+      )}
+
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div>
+          <SmallText>DAO NAME</SmallText>
+          {manifest ? <H2>{manifest?.manifest.name}</H2> : <Skeleton />}
+        </div>
+
+        <div style={{ textAlign: "right" }}>
+          <SmallText>DISTRIBUTION</SmallText>
+          {manifest ? (
+            <div style={{ height: 34, marginTop: 6, display: "flex", alignItems: "center", gap: 6, justifyContent: "flex-end", textAlign: "right" }}>
+              <img style={{ width: 24, height: 24, borderRadius: "50%" }} src={`https://storage.herewallet.app/ft/${manifest.token.toLowerCase()}.png`} />
+              <BoldP>
+                {formatUnits(manifest.balance, manifest.decimal)} {manifest.symbol}
+              </BoldP>
+            </div>
+          ) : (
+            <Skeleton />
+          )}
+        </div>
       </div>
 
       <Fieild>
         <SmallText>DAO MANIFEST</SmallText>
         <Card style={{ height: 180, overflowY: "auto" }}>
-          <Text>{manifest?.manifests[0]?.prompt}</Text>
+          <Text>{manifest?.manifest?.manifests[0]?.prompt}</Text>
         </Card>
       </Fieild>
 
@@ -131,24 +212,39 @@ const DAO = () => {
 
       {daoResult != null && (
         <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 16 }}>
-          <Fieild>
-            <SmallText>DAO REQUEST</SmallText>
-            <Card>
-              <Text>{daoResult.request}</Text>
-            </Card>
-          </Fieild>
+          {daoResult.request != null && (
+            <Fieild>
+              <SmallText>DAO REQUEST</SmallText>
+              <Card>
+                <Text>{daoResult.request}</Text>
+              </Card>
+            </Fieild>
+          )}
 
-          <Fieild>
-            <SmallText>DAO ANSWER</SmallText>
-            <Card style={{ position: "relative" }}>
-              <Text>{daoResult.response}</Text>
-              <img src={chatgtpIcon} style={{ width: 32, height: 32, position: "absolute", top: 8, right: 8 }} />
-            </Card>
-          </Fieild>
+          {daoResult.response != null && (
+            <Fieild>
+              <SmallText>DAO ANSWER</SmallText>
+              <Card style={{ position: "relative" }}>
+                <Text>{daoResult.response}</Text>
+                <img src={chatgtpIcon} style={{ width: 32, height: 32, position: "absolute", top: 8, right: 8 }} />
+              </Card>
+            </Fieild>
+          )}
 
-          <ActionButton isLoading={isClaiming} onClick={() => makeTx()}>
-            Claim
-          </ActionButton>
+          {daoResult.error != null && (
+            <Fieild>
+              <SmallText>DAO ERROR</SmallText>
+              <Card>
+                <Text>{daoResult.error}</Text>
+              </Card>
+            </Fieild>
+          )}
+
+          {daoResult.signature != null && (
+            <ActionButton isLoading={isClaiming} onClick={() => makeTx()}>
+              Claim
+            </ActionButton>
+          )}
         </div>
       )}
     </Root>
