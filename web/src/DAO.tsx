@@ -4,6 +4,9 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Client, DecodedMessage } from "@xmtp/xmtp-js";
 import { ethers, formatUnits } from "ethers";
+import { readContract } from "viem/actions";
+import { useWalletClient } from "wagmi";
+import { base } from "viem/chains";
 import uuid4 from "uuid4";
 
 import ConfettiExplosion from "react-confetti-explosion";
@@ -19,9 +22,6 @@ import { notify } from "./toast";
 import { DAO_ABI, ERC20_ABI, TEE } from "./contract";
 import { useEthersSigner } from "./useEtherProvider";
 import chatgtpIcon from "./assets/chatgpt.png";
-import { base } from "viem/chains";
-import { readContract } from "viem/actions";
-import { useWalletClient } from "wagmi";
 import copyTextToClipboard from "./helpers";
 
 const DAO = () => {
