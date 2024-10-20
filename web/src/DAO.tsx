@@ -17,6 +17,7 @@ import { notify } from "./toast";
 import { DAO_ABI, TEE } from "./contract";
 import { useEthersSigner } from "./useEtherProvider";
 import chatgtpIcon from "./assets/chatgpt.png";
+import { base } from "viem/chains";
 
 const DAO = () => {
   const { id } = useParams();
@@ -66,7 +67,8 @@ const DAO = () => {
       const tweetId = parts.reverse().find((t) => !isNaN(+t));
       if (tweetId == null) throw "Invalid tweet link";
 
-      await conversation?.send(JSON.stringify({ dao_address: id, tweet_id: tweetId, id: uuid }));
+      console.log({ dao_address: `${base.id}:${id}`, tweet_id: tweetId, id: uuid });
+      await conversation?.send(JSON.stringify({ dao_address: `${base.id}:${id}`, tweet_id: tweetId, id: uuid }));
       const msg = await waitMessage();
       setLoading(false);
       setResult(msg);

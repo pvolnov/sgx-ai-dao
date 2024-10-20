@@ -6,6 +6,7 @@ import Create from "./Create";
 import Header from "./Header";
 import { WalletProvider } from "./WalletProvider";
 import DAO from "./DAO";
+import PopupsProvider from "@uikit/Popup";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <BrowserRouter>
         <>
           <Header />
+          <PopupsProvider />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/create" element={<Create />} />
