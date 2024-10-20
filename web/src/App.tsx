@@ -8,6 +8,9 @@ import { WalletProvider } from "./WalletProvider";
 import HowItWorks from "./HowItWorks";
 import DAO from "./DAO";
 import PopupsProvider from "@uikit/Popup";
+import { SmallText } from "@uikit/typographic";
+import intelSgx from "./assets/intel.png";
+import { colors } from "@uikit/theme";
 
 function App() {
   return (
@@ -23,6 +26,26 @@ function App() {
             <Route path="/about" element={<HowItWorks />} />
             <Route path="*" element={<Home />} />
           </Routes>
+
+          <a
+            href="https://www.intel.com/content/www/us/en/developer/tools/software-guard-extensions/attestation-services.html"
+            style={{
+              textDecoration: "none",
+              background: colors.elevation0,
+              borderRadius: 12,
+              opacity: 0.8,
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              position: "fixed",
+              bottom: 12,
+              right: 12,
+              padding: "4px 8px",
+            }}
+          >
+            <SmallText style={{ textDecoration: "none", color: colors.blackPrimary }}>Secured by Intel SGX</SmallText>
+            <img src={intelSgx} style={{ width: 24, height: 24 }} />
+          </a>
         </>
       </BrowserRouter>
     </WalletProvider>
