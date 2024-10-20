@@ -1,23 +1,20 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useConnectors, useDisconnect, useReconnect, useWalletClient } from "wagmi";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useConnectors, useReconnect } from "wagmi";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import icon from "./assets/icon.png";
 
 import { colors } from "@uikit/theme";
 import { Button } from "@uikit/button";
-import { Text } from "@uikit/typographic";
+import { BoldP } from "@uikit/typographic";
 import Icon from "@uikit/Icon";
 
 const HeaderComponent = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [theme, setTheme] = useState(() => document.documentElement.getAttribute("data-theme") || "dark");
-
-  const { data: client } = useWalletClient();
-  const { openConnectModal } = useConnectModal();
-  const { disconnect } = useDisconnect();
   const { reconnect } = useReconnect();
   const connectors = useConnectors();
 
@@ -33,29 +30,27 @@ const HeaderComponent = () => {
     });
   };
 
-  const connectWallet = async () => {
-    disconnect();
-    openConnectModal?.();
-  };
-
   return (
-    <Header>
-      <NavBar>
-        <NavButton $active={location.pathname === "/"} onClick={() => navigate("/")}>
-          <Text>Home</Text>
-        </NavButton>
+    <div style={{ background: colors.elevation0 }}>
+      <Header>
+        <img src={icon} style={{ width: 40, height: 40, marginRight: 32 }} />
 
-        <NavButton $active={location.pathname === "/create"} onClick={() => navigate("/create")}>
-          <Text>Create MAO</Text>
-        </NavButton>
+        <NavBar>
+          <NavButton $active={location.pathname === "/"} onClick={() => navigate("/")}>
+            <BoldP>Home</BoldP>
+          </NavButton>
 
-        <NavButton $active={location.pathname === "/about"} onClick={() => navigate("/about")}>
-          <Text>How it works</Text>
-        </NavButton>
-      </NavBar>
+          <NavButton $active={location.pathname === "/create"} onClick={() => navigate("/create")}>
+            <BoldP>Create MAO</BoldP>
+          </NavButton>
 
-      <SideButtons>
-        <Button style={{ gap: 12, height: 42, background: colors.elevation1, padding: "12px 12px", borderRadius: 24, color: colors.blackPrimary }} onClick={() => connectWallet()}>
+          <NavButton $active={location.pathname === "/about"} onClick={() => navigate("/about")}>
+            <BoldP>How it works</BoldP>
+          </NavButton>
+        </NavBar>
+
+        <SideButtons>
+          {/* <Button style={{ gap: 12, height: 42, background: colors.elevation1, padding: "12px 12px", borderRadius: 24, color: colors.blackPrimary }} onClick={() => connectWallet()}>
           {client ? (
             <Text>
               {client.account.address.slice(0, 6)}..{client.account.address.slice(-6)}
@@ -65,22 +60,27 @@ const HeaderComponent = () => {
           )}
 
           <Icon name="wallet" />
-        </Button>
+        </Button> */}
 
-        <Button onClick={() => toggleTheme()} style={{ gap: 12, height: 42, background: colors.elevation1, padding: "12px 12px", borderRadius: 24, color: colors.blackPrimary }}>
-          <Icon name={theme === "dark" ? "sun" : "lighter"} />
-        </Button>
-      </SideButtons>
-    </Header>
+          <ConnectButton />
+
+          <Button onClick={() => toggleTheme()} style={{ gap: 12, height: 42, background: colors.elevation1, padding: "12px 12px", borderRadius: 24, color: colors.blackPrimary }}>
+            <Icon name={theme === "dark" ? "sun" : "lighter"} />
+          </Button>
+        </SideButtons>
+      </Header>
+    </div>
   );
 };
 
 export const Header = styled.div`
   background: ${colors.elevation0};
+  max-width: 1200px;
   width: 100%;
+  margin: auto;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   height: 62px;
   padding: 0 24px;
 
@@ -106,6 +106,7 @@ export const SideButtons = styled.div`
 
 export const NavBar = styled.div`
   display: flex;
+  align-items: center;
   gap: 32px;
 
   @media (max-width: 540px) {

@@ -2,23 +2,18 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
-import { createPublicClient } from "viem";
 import { readContract } from "viem/actions";
-import { base } from "viem/chains";
-import { http } from "wagmi";
+import { useWalletClient } from "wagmi";
 
 import { colors } from "@uikit/theme";
 import { BoldP, H2, Text, TinyText } from "@uikit/typographic";
 import { DAO_ABI, ERC20_ABI, REGISTORY_ABI, REGISTORY_ADDRESS } from "./contract";
 import { ManifestDAO } from "./Create";
 import { formatUnits } from "ethers";
-
-export const publicClient = createPublicClient({
-  transport: http(),
-  chain: base,
-});
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const HomeScreen = () => {
+  const { data: client } = useWalletClient();
   const navigate = useNavigate();
   const [list, setList] = useState<
     {
@@ -32,8 +27,9 @@ const HomeScreen = () => {
   >([]);
 
   useEffect(() => {
+    if (!client) return setList([]);
     const loadDAOs = async () => {
-      const daos = await readContract(publicClient, {
+      const daos = await readContract(client, {
         address: REGISTORY_ADDRESS,
         functionName: "getDaos",
         abi: REGISTORY_ABI,
@@ -42,14 +38,14 @@ const HomeScreen = () => {
       setList([]);
       (daos as any[]).map(async (dao) => {
         const [hash, token] = await Promise.all([
-          readContract(publicClient, { abi: DAO_ABI, functionName: "manifest", address: dao }),
-          readContract(publicClient, { abi: DAO_ABI, functionName: "tokenAddress", address: dao }),
+          readContract(client, { abi: DAO_ABI, functionName: "manifest", address: dao }),
+          readContract(client, { abi: DAO_ABI, functionName: "tokenAddress", address: dao }),
         ]);
 
         const [balance, symbol, decimal] = await Promise.all([
-          readContract(publicClient, { abi: ERC20_ABI, functionName: "balanceOf", address: token as any, args: [dao] }),
-          readContract(publicClient, { abi: ERC20_ABI, functionName: "symbol", address: token as any }),
-          readContract(publicClient, { abi: ERC20_ABI, functionName: "decimals", address: token as any }),
+          readContract(client, { abi: ERC20_ABI, functionName: "balanceOf", address: token as any, args: [dao] }),
+          readContract(client, { abi: ERC20_ABI, functionName: "symbol", address: token as any }),
+          readContract(client, { abi: ERC20_ABI, functionName: "decimals", address: token as any }),
         ]);
 
         const manifest = await fetch(`https://ipfs.hotdao.ai/ipfs/${hash}`).then((r) => r.json());
@@ -58,16 +54,27 @@ const HomeScreen = () => {
     };
 
     loadDAOs();
-  }, []);
+  }, [client]);
+
+  if (client == null) return null;
+  if (client?.account == null) {
+    return (
+      <Root>
+        <H2>Connect wallet</H2>
+        <Text>To explore MAOs on any blockchains</Text>
+        <ConnectButton />
+      </Root>
+    );
+  }
 
   return (
     <Root>
-      <H2>All MAOs</H2>
+      <H2>{client?.chain.name} MAOs</H2>
       <Grid>
         {list
           .sort((a, b) => b.manifest.created_ts - a.manifest.created_ts)
           .map((item) => (
-            <Card onClick={() => navigate("/dao/" + item.dao)}>
+            <Card onClick={() => navigate(`/dao/${client.chain.id}/${item.dao}`)}>
               <BoldP>{item.manifest.name}</BoldP>
 
               <div>

@@ -32,7 +32,7 @@ export const H4 = styled.h4`
 `;
 
 export const Text = styled.p`
-  font-family: "Inter";
+  font-family: "SFRounded";
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
@@ -51,7 +51,7 @@ export const BoldP = styled(Text)`
 `;
 
 export const SmallText = styled.p`
-  font-family: "Inter";
+  font-family: "SFRounded";
   font-style: normal;
   font-weight: 500;
   font-size: 14px;

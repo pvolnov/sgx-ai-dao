@@ -23,7 +23,7 @@ export function clientToSigner(client: Client<Transport, Chain, Account>) {
   return signer;
 }
 
-export function useEthersSigner() {
-  const { data: client } = useConnectorClient<Config>();
+export function useEthersSigner(chain?: number) {
+  const { data: client } = useConnectorClient<Config>({ chainId: chain });
   return useMemo(() => (client ? clientToSigner(client) : undefined), [client]);
 }

@@ -1,4 +1,3 @@
-import React from "react";
 import MarkdownPreview from "@uiw/react-markdown-preview";
 import styled from "styled-components";
 import { colors } from "@uikit/theme";

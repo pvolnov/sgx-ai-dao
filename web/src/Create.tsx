@@ -147,7 +147,7 @@ const CreateDao = () => {
 
   const deploy = async () => {
     try {
-      if (!etherClient) throw "Connect wallet to deploy";
+      if (!etherClient || !client) throw "Connect wallet to deploy";
       setLoading(true);
 
       if (!name) throw "Setup DAO name";
@@ -192,14 +192,15 @@ const CreateDao = () => {
       let int = parseUnits(amount, decimal);
       if (int > balance) int = balance;
 
-      const result = await client?.deployContract({
+      console.log([tokenAddress, address, hash, int, 0n, REGISTORY_ADDRESS]);
+      const result = await client.deployContract({
         args: [tokenAddress, address, hash, int, 0n, REGISTORY_ADDRESS],
         bytecode: `0x${DAO_CODE}`,
         abi: DAO_ABI,
       });
 
-      const receipt = await waitForTransactionReceipt(client!, { hash: result! });
-      navigate("/dao/" + receipt.contractAddress);
+      const receipt = await waitForTransactionReceipt(client, { hash: result! });
+      navigate(`/dao/${client.chain.id}/${receipt.contractAddress}`);
       console.log({ receipt });
     } catch (e) {
       console.error(e);
@@ -392,7 +393,7 @@ const CreateDao = () => {
 
       <div style={{ marginTop: 24 }}>
         <ActionButton big isLoading={isLoading} onClick={() => deploy()}>
-          DEPLOY DAO
+          Deploy MAO on {client?.chain.name}
           <Icon style={{ marginLeft: 16 }} name="rocket" />
         </ActionButton>
 
@@ -422,7 +423,7 @@ const NumberInput = styled.input`
   outline: none;
   padding: 12px 14px;
 
-  font-family: "Inter";
+  font-family: "SFRounded";
   font-style: normal;
   font-weight: bold;
   font-size: 20px;

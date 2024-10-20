@@ -44,7 +44,7 @@ export const SActionButton = styled.button<{ $big?: boolean; $stroke?: boolean }
   box-sizing: border-box;
   white-space: pre;
 
-  font-family: "Inter";
+  font-family: "SFRounded";
   font-weight: 600;
   font-size: 16px;
   line-height: 22px;
@@ -95,7 +95,7 @@ export const SLinkButton = styled.button`
   background: transparent;
   cursor: pointer;
 
-  font-family: "Inter";
+  font-family: "SFRounded";
   font-style: normal;
   font-weight: 600;
   font-size: 16px;
@@ -129,7 +129,7 @@ export const SHereButton = styled.button`
   align-self: stretch;
   flex-grow: 0;
 
-  font-family: "Inter";
+  font-family: "SFRounded";
   font-style: normal;
   font-weight: 600;
   font-size: 16px;

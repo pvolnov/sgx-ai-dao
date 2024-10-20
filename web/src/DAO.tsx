@@ -20,9 +20,9 @@ import chatgtpIcon from "./assets/chatgpt.png";
 import { base } from "viem/chains";
 
 const DAO = () => {
-  const { id } = useParams();
+  const { chain, id } = useParams();
   const [manifest, setManifest] = useState<ManifestDAO>();
-  const etherClient = useEthersSigner();
+  const etherClient = useEthersSigner(+(chain || 1));
 
   const [isClaiming, setClaiming] = useState(false);
   const [isLoading, setLoading] = useState(false);

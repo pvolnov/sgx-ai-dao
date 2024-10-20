@@ -19,8 +19,9 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/create" element={<Create />} />
-            <Route path="/dao/:id" element={<DAO />} />
+            <Route path="/dao/:chain/:id" element={<DAO />} />
             <Route path="/about" element={<HowItWorks />} />
+            <Route path="*" element={<Home />} />
           </Routes>
         </>
       </BrowserRouter>
