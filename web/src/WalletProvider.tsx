@@ -11,23 +11,26 @@ import { aurora, base, hederaTestnet, polygon, rootstockTestnet } from "wagmi/ch
 //   return result;
 // });
 
+const nets = {
+  base: base,
+  polygon: polygon,
+  aurora: aurora,
+  rootstock: rootstockTestnet,
+  hedera: hederaTestnet,
+  airdao: {
+    id: 22040,
+    name: "AirDAO Testnet",
+    nativeCurrency: { decimals: 18, name: "AMB", symbol: "AMB" },
+    rpcUrls: { default: { http: ["https://network.ambrosus-test.io"] } },
+    testnet: true,
+  },
+};
+
+const selected = Object.entries(nets).find((t) => location.search.slice(1).includes(t[0]))?.[1] || Object.values(nets);
 const queryClient = new QueryClient();
 const config = getDefaultConfig({
   projectId: "170e35a2d31f9928bea678dbe3efcba6",
-  chains: [
-    base,
-    polygon,
-    aurora,
-    rootstockTestnet,
-    hederaTestnet,
-    {
-      id: 22040,
-      name: "AirDAO Testnet",
-      nativeCurrency: { decimals: 18, name: "AMB", symbol: "AMB" },
-      rpcUrls: { default: { http: ["https://network.ambrosus-test.io"] } },
-      testnet: true,
-    },
-  ],
+  chains: (Array.isArray(selected) ? selected : [selected]) as any,
   appName: "MAO",
 });
 

@@ -2,11 +2,11 @@ import styled from "styled-components";
 import { observer } from "mobx-react-lite";
 import { waitForTransactionReceipt } from "viem/actions";
 import { Client, DecodedMessage } from "@xmtp/xmtp-js";
-import { useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
 import { ethers, formatUnits, parseUnits } from "ethers";
-import { useWalletClient } from "wagmi";
+import { useChainId, useWalletClient } from "wagmi";
+import { useNavigate } from "react-router-dom";
 import { isAddress } from "viem";
-import { useState } from "react";
 import uuid4 from "uuid4";
 
 import { ActionButton } from "@uikit/button";
@@ -27,6 +27,7 @@ import { Controlled as CodeMirror } from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material-darker.css";
 import "codemirror-graphql/mode";
+import { base } from "viem/chains";
 
 export interface ManifestDAO {
   name: string;
@@ -94,17 +95,33 @@ const CreateDao = () => {
   const navigate = useNavigate();
   const etherClient = useEthersSigner();
   const { data: client } = useWalletClient();
+  const chainId = useChainId();
 
   const [isLoading, setLoading] = useState(false);
   const [tweetsFrom, setTweetsFrom] = useState("");
   const [tokenAddress, setTokenAddress] = useState("");
   const [manifest, setManifest] = useState("");
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState("0");
   const [name, setName] = useState("");
   const [level, setLevel] = useState(2);
   const [ifResultAmount, setResultAmount] = useState("0");
   const [graph, serGraph] = useState<Record<string, { id: string; query: string }>>({});
   const [selectedToken, setSelectedToken] = useState<{ balance: bigint; symbol: string; decimal: number }>();
+
+  const setupToken = useCallback(
+    async (addr: string) => {
+      setTokenAddress(addr);
+      if (!isAddress(addr)) return setSelectedToken(undefined);
+      const erc20 = new ethers.Contract(addr, ERC20_ABI, etherClient);
+      const [balance, symbol, decimal] = await Promise.all([erc20.balanceOf(etherClient?.address), erc20.symbol(), erc20.decimals()]);
+      setSelectedToken({ balance, symbol, decimal });
+    },
+    [etherClient?.address]
+  );
+
+  useEffect(() => {
+    if (chainId === base.id) setupToken("0x833589fcd6edb6e08f4c7c32d4f71b54bda02913");
+  }, [chainId, setupToken]);
 
   const openGraphEditor = (name: string, onClose: () => void) => {
     sheets.present({
@@ -221,14 +238,6 @@ const CreateDao = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const setupToken = async (addr: string) => {
-    setTokenAddress(addr);
-    if (!isAddress(addr)) return setSelectedToken(undefined);
-    const erc20 = new ethers.Contract(addr, ERC20_ABI, etherClient);
-    const [balance, symbol, decimal] = await Promise.all([erc20.balanceOf(etherClient?.address), erc20.symbol(), erc20.decimals()]);
-    setSelectedToken({ balance, symbol, decimal });
   };
 
   const tokenBalance = selectedToken ? formatUnits(selectedToken.balance, selectedToken.decimal) : 0;
