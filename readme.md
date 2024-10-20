@@ -1,6 +1,6 @@
 # MAO - Machine Autonomous Organization ![alt text](media/image-1.png)
 
-**The service to create machine-controlled Smart Contracts.** These organizations are managed autonomously and transparently—without any human interference!
+**The service to create AI-controlled Smart Contracts (Machine Autonomous Organization).** These organizations are managed autonomously and transparently—without any human interference! Launch your social experiments and mem DAOs.
 
 At the core of MAO lies the integration of advanced security and cryptographic technologies, granting AI unconditional control over users' funds.
 
@@ -25,10 +25,10 @@ Stack
 
 Folders:
 
-Web UI: [./web](./web)
-SGX Server code: [./main.ts](./main.ts)
-SGX Verification code: [./main.ts](./main.ts)
-SGX Verification code: [./main.ts](./main.ts)
+- Web UI: [./web](./web)
+- SGX Server code: [./main.ts](./main.ts)
+- SGX Verification code: [./main.ts](./main.ts)
+- SGX Verification code: [./main.ts](./main.ts)
 
 Run Node in SGX
 
